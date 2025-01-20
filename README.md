@@ -9,3 +9,4 @@ Heres what it sounds like
 https://github.com/user-attachments/assets/47ea5806-94c5-407b-ab23-771e34312398
 
 I made this since a youtuber called plexiate has a bit of using a looper to sound like hes lagging and I thought it was funny
+I know nothing about how to github proper
