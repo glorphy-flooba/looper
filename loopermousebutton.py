@@ -9,9 +9,10 @@ import math
 
 #config, change to your needs
 loopbind = 'f19' #what key you hold down to have it loop, i use f19 because its on my mouse
-virtualmikeindex = 10 #run the code, look for output device with name "CABLE Input (VB-Audio Virtual C" or similar, and use the index of that
+virtualmikeindex = 7 #run the code, look for output device with name "CABLE Input (VB-Audio Virtual C" or similar, and use the index of that
 volumethreshold = 0.02 #run the code after setting everything up, look at the numbers it outputs, thats the volume, change this variable to be the volume you want to trigger the loop
 samplerate = 44100 #works for me, but 48000 would also be very common
+feedback = False #if you want to hear yourself, set this to true, if you dont, set it to false
 
 chunk = 1024 #dont change any of this unless you know what your doing (I dont)
 format = pyaudio.paInt16
@@ -32,15 +33,16 @@ input = p.open(format = format,
                 channels = 1,
                 rate = samplerate,
                 input = True,
-                frames_per_buffer = chunk)
+                frames_per_buffer = chunk,
+                input_device_index=1)
 
 virtualmike = p.open(format = format,   
                 channels = 1,
                 rate = samplerate,
                 output = True,
                 output_device_index = virtualmikeindex)
-
-hearyourself = p.open(format = format,   
+if feedback:
+    hearyourself = p.open(format = format,   
                 channels = 1,
                 rate = samplerate,
                 output = True)
@@ -61,17 +63,20 @@ while True:
     if not keyboard.is_pressed(loopbind):
         s = input.read(chunk)
         virtualmike.write(s)
-        hearyourself.write(s)
+        if feedback:
+            hearyourself.write(s)
     if keyboard.is_pressed(loopbind): 
         print("waiting for loud")
         while volume(s) < volumethreshold and keyboard.is_pressed(loopbind): #wait intill you actually start saying anything, 0.02 is the volume, it worked for me, change it if required 
             virtualmike.write(s)
-            hearyourself.write(s)
+            if feedback:
+                hearyourself.write(s)
             s = input.read(chunk)
             print(volume(s))
         while keyboard.is_pressed(loopbind):
             virtualmike.write(s)
-            hearyourself.write(s)
+            if feedback:
+                hearyourself.write(s)
             print(volume(s))
     if keyboard.is_pressed('z') and keyboard.is_pressed('c'): #
         print("ending")
@@ -79,8 +84,9 @@ while True:
         input.close()
         virtualmike.stop_stream()
         virtualmike.close()
-        hearyourself.stop_stream()
-        hearyourself.close()
+        if feedback: 
+            hearyourself.stop_stream()
+            hearyourself.close()
         p.terminate()
         break
     time.sleep(0.005)
