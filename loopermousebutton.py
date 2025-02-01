@@ -13,7 +13,7 @@ virtualmikeindex = 7 #run the code, look for output device with name "CABLE Inpu
 volumethreshold = 0.02 #run the code after setting everything up, look at the numbers it outputs, thats the volume, change this variable to be the volume you want to trigger the loop
 samplerate = 44100 #works for me, but 48000 would also be very common
 feedback = False #if you want to hear yourself, set this to true, if you dont, set it to false
-
+video_file = "stampete.mp4"
 chunk = 1024 #dont change any of this unless you know what your doing (I dont)
 format = pyaudio.paInt16
 
